@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mural Digital | Official Game Page</title>
+  <link rel="stylesheet" type="text/css" href="csspropio.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+  <section class="text-center logo">
+    <a href="index.html">
+      <img src="imagenes/logo.jpg" alt="Logo ST-ART" width="400" class="img-fluid"></a>
+  </section>
+	
+	<section class="menu text-justify-center">
+		<nav class="navbar navbar-expand-md" style="background-color: #313131" data-bs-theme="dark">
+					  <div class="container-fluid">
+					  <a class="navbar-brand" href="#"></a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					  <span class="navbar-toggler-icon"></span>
+					</button>
+						<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						  <ul class="navbar-nav mx-auto h5" style="width: 680px;">
+							<li class="nav-item">
+									<a class="nav-link active" aria-current="page" href="#">Inicio</a>
+								  </li>
+								  <li class="nav-item">
+									<a class="nav-link" href="historia.html">Historia</a>
+								  </li>
+								  <li class="nav-item">
+									<a class="nav-link" href="iniciativa.html">Iniciativa</a>
+								  </li>
+									 <li class="nav-item">
+									<a class="nav-link" href="juegos.html">Juegos</a>
+								  </li>
+								  <li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="proyectos.html" role="button" aria-expanded="false">Proyectos</a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="proyectos.html">Proyectos</a></li>
+                      <li><a class="dropdown-item" href="rl.html">R L</a></li>
+                      <li><a class="dropdown-item" href="zop.html">Zop</a></li>
+                      <li><a class="dropdown-item" href="carx.html">Caro Pauletti</a></li>
+                      <li><a class="dropdown-item" href="imachine.html">Imachine</a></li>
+                      <li><a class="dropdown-item" href="xxhole.html">xxhole</a></li>
+                    </ul>
+								  </li>
+								  <li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="contacto.html" role="button" aria-expanded="false">Contacto</a>
+										<ul class="dropdown-menu">
+											<li><a class="dropdown-item" href="contacto.html">CONTACTO</a></li>
+											  <li><a class="dropdown-item" href="info.html">Info</a></li>
+										  </ul>
+								  </li>
+							  </ul>
+						</div>
+					  </div>
+				  </nav>
+			  </section>
+  
+<section class="titu">
+  <h1 class="text-center display-5">Coincidencias</h1>
+  <p class="text-center lead">Diseño por xxhole</p>
+  <h5>Juego de memoria </h5>
+  <p>Hacer clic en una carta para revelar su imagen.<br>
+    Hacer clic en otra carta para revelar su imagen.<br> 
+    Si dos cartas tienen la misma imagen, permanecen visibles, y el jugador avan za.<br>
+    Si las cartas no coinciden, vuelven a su estado original.<br> 
+    El juego sigue hasta que todas las cartas coincidan, momento en el cual "Ganaste el juego", y se reinicia con "Ok".</p>
+  <h5>A jugar!</h5>
+</section>
+  
+<section id="juego" class="juego">
+<div id="game-board"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const imagesFolder = "imagenes/";
+    const totalPairs = 8;
+    let selectedCards = [];
+    let matchedPairs = 0;
+
+    // Duplicar las imágenes para formar pares
+    const images = Array.from({ length: totalPairs }, (_, index) => index + 1).flatMap(i => [i, i]);
+    // Barajar las imágenes
+    images.sort(() => Math.random() - 0.5);
+
+    const gameBoard = document.getElementById("game-board");
+
+    // Crear las cartas en el tablero
+    images.forEach((image, index) => {
+      const card = document.createElement("img");
+      card.src = imagesFolder + "cuadrado.png"; // Imagen de reverso de la carta
+      card.dataset.index = index;
+      card.addEventListener("click", flipCard);
+      gameBoard.appendChild(card);
+    });
+
+    function flipCard() {
+      const card = this;
+      const index = card.dataset.index;
+
+      if (selectedCards.length < 2 && !selectedCards.includes(index)) {
+        card.src = imagesFolder + images[index] + ".jpeg";
+        selectedCards.push(index);
+
+        if (selectedCards.length === 2) {
+          setTimeout(checkMatch, 500);
+        }
+      }
+    }
+
+
+    function restartGame() {
+  // Restablecer variables
+  selectedCards = [];
+  matchedPairs = 0;
+
+  // Eliminar cartas existentes
+  while (gameBoard.firstChild) {
+    gameBoard.removeChild(gameBoard.firstChild);
+  }
+
+  // Barajar y recrear el tablero
+  images.sort(() => Math.random() - 0.5);
+
+  images.forEach((image, index) => {
+    const card = document.createElement("img");
+    card.src = imagesFolder + "cuadrado.png";
+    card.dataset.index = index;
+    card.addEventListener("click", flipCard);
+    gameBoard.appendChild(card);
+  });
+}
+
+    function checkMatch() {
+      const [index1, index2] = selectedCards;
+      const card1 = gameBoard.children[index1];
+      const card2 = gameBoard.children[index2];
+
+      if (images[index1] === images[index2]) {
+        matchedPairs++;
+
+        if (matchedPairs === totalPairs) {
+          alert("¡Ganaste el juego!");
+          restartGame();
+        }
+      } else {
+        // Si las cartas no coinciden, volvemos a poner el reverso
+        card1.src = imagesFolder + "cuadrado.png";
+        card2.src = imagesFolder + "cuadrado.png";
+      }
+
+      // Limpiar la lista de cartas seleccionadas
+      selectedCards = [];
+    }
+  });
+</script>
+</section>
+
+<footer class="text-center lala">
+  <img src="imagenes/logologo.png" alt="Logo ST-ART" width="100" class="cucux">
+  <section class="cucu">
+  <div class="container text-center">
+      
+      <a class="xq" href=""><img src="imagenes/igb.png" alt="Icono Instagram" width="50"></a>
+    </div>
+  </section>
+<p>Copyright @ Mural Digital ST-ART 2024.</p>
+</footer>
+</body>
+</html>
